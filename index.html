@@ -29,12 +29,53 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center p-4 antialiased selection:bg-brand-500 selection:text-white">
 
-  
-<!-- Header con logos -->
+  <!-- Ventana Flotante de Contraseña de Acceso -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl space-y-4">
+      
+      <!-- Logos -->
+      <div class="flex items-center justify-center gap-3">
+        <img src="/logo-app.png" alt="EcoTech" class="w-12 h-12 rounded-xl object-contain border border-slate-700 bg-slate-800/80 shadow" onerror="this.style.display='none'" />
+        <div class="bg-white px-2 py-1 rounded-xl shadow border border-slate-200 flex items-center justify-center">
+          <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-8 w-auto object-contain" onerror="this.style.display='none'" />
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white">Acceso al Sistema</h2>
+        <p class="text-xs text-slate-400 mt-1">Ingresa la contraseña del proyecto para usar el clasificador de residuos tecnológicos.</p>
+      </div>
+
+      <!-- Formulario de contraseña -->
+      <form id="authForm" class="space-y-3" onsubmit="event.preventDefault(); handleAuth();">
+        <div>
+          <input 
+            type="password" 
+            id="passwordInput" 
+            placeholder="Escribe la contraseña" 
+            class="w-full py-3 px-4 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm focus:outline-none focus:border-brand-500 text-center tracking-wider"
+            required
+            autocomplete="off"
+          />
+          <p id="authError" class="hidden text-rose-400 text-xs mt-2 font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-95 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition">
+          Ingresar
+        </button>
+      </form>
+
+      <p class="text-[11px] text-slate-500">Universidad ECCI • 2026</p>
+    </div>
+  </div>
+
+  <!-- Header con logos -->
   <header class="w-full max-w-md flex items-center justify-between py-4 border-b border-slate-800">
     <!-- Logo App -->
     <div class="flex items-center space-x-3">
-      <img src="/logo-app.png" alt="EcoTech Logo" class="w-11 h-11 rounded-xl object-contain border border-slate-700 bg-slate-800/80 shadow-md" />
+      <img src="/logo-app.png" alt="EcoTech Logo" class="w-11 h-11 rounded-xl object-contain border border-slate-700 bg-slate-800/80 shadow-md" onerror="this.src='/icono.jpg'" />
       <div>
         <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
           EcoTech AI
@@ -45,9 +86,10 @@
     </div>
     <!-- Logo Universidad ECCI -->
     <div class="bg-white px-2.5 py-1 rounded-xl flex items-center justify-center shadow-md border border-slate-200">
-      <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-8 w-auto object-contain" />
+      <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-8 w-auto object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
     </div>
-    </header>
+  </header>
+
   <!-- Main Container -->
   <main class="w-full max-w-md flex-1 flex flex-col py-6 space-y-6">
 
@@ -216,5 +258,31 @@
   </footer>
 
   <script src="/app.js"></script>
+
+  <!-- Lógica de Control de Acceso por Contraseña -->
+  <script>
+    function handleAuth() {
+      const input = document.getElementById('passwordInput');
+      const errorMsg = document.getElementById('authError');
+      const modal = document.getElementById('authModal');
+
+      if (input.value.trim() === 'ecci2026') {
+        modal.classList.add('hidden');
+        sessionStorage.setItem('ecci_authenticated', 'true');
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    // Comprobar si ya ingresó en la sesión actual
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('ecci_authenticated') === 'true') {
+        const modal = document.getElementById('authModal');
+        if (modal) modal.classList.add('hidden');
+      }
+    });
+  </script>
 </body>
 </html>
