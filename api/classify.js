@@ -29,44 +29,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Consultar dinámicamente qué modelos están disponibles para tu API Key
-    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const listResp = await fetch(listUrl);
-    
-    if (!listResp.ok) {
-      const listErr = await listResp.text();
-      return res.status(listResp.status).json({
-        error: `Error al validar API Key con Google (${listResp.status}): ${listErr}`
-      });
-    }
-
-    const listData = await listResp.json();
-    const availableModels = listData.models || [];
-    
-    // Filtrar modelos que soporten generación de contenido
-    const contentModels = availableModels.filter(m => 
-      Array.isArray(m.supportedGenerationMethods) && 
-      m.supportedGenerationMethods.includes('generateContent')
-    );
-
-    if (contentModels.length === 0) {
-      return res.status(500).json({
-        error: 'Tu clave de API no tiene modelos de generación disponibles actualmente.'
-      });
-    }
-
-    // Priorizar modelos rápidos de visión
-    let targetModel = contentModels.find(m => m.name.includes('flash') && (m.name.includes('2.5') || m.name.includes('2.0')));
-    if (!targetModel) {
-      targetModel = contentModels.find(m => m.name.includes('flash'));
-    }
-    if (!targetModel) {
-      targetModel = contentModels.find(m => m.name.includes('gemini'));
-    }
-    if (!targetModel) {
-      targetModel = contentModels[0];
-    }
-
     const cleanBase64 = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
     const validMimeType = mimeType || 'image/jpeg';
 
@@ -115,21 +77,38 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
       }
     };
 
-    const generateUrl = `https://generativelanguage.googleapis.com/v1beta/${targetModel.name}:generateContent?key=${apiKey}`;
-    const genResp = await fetch(generateUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(geminiPayload)
-    });
+    // Modelos oficiales recomendados por Google
+    const candidateModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+    let lastError = null;
+    let data = null;
 
-    if (!genResp.ok) {
-      const genErr = await genResp.text();
-      return res.status(genResp.status).json({
-        error: `Error al generar contenido con ${targetModel.name} (${genResp.status}): ${genErr}`
+    for (const model of candidateModels) {
+      const generateUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      try {
+        const genResp = await fetch(generateUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(geminiPayload)
+        });
+
+        if (genResp.ok) {
+          data = await genResp.json();
+          break; // Conexión exitosa
+        } else {
+          const genErr = await genResp.text();
+          lastError = `Modelo ${model} (${genResp.status}): ${genErr}`;
+        }
+      } catch (networkErr) {
+        lastError = networkErr.message;
+      }
+    }
+
+    if (!data) {
+      return res.status(502).json({
+        error: `Error al procesar con IA: ${lastError}`
       });
     }
 
-    const data = await genResp.json();
     const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!candidateText) {
