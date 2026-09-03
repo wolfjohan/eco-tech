@@ -57,8 +57,6 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
 }
 `;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
     const geminiPayload = {
       contents: [
         {
@@ -79,24 +77,43 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
       }
     };
 
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(geminiPayload)
-    });
+    // Modelos activos de Gemini compatibles con visión
+    const candidateModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite'];
+    let lastError = null;
+    let data = null;
 
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      return res.status(response.status).json({
-        error: `Error de la API de IA (${response.status}): ${errorDetails}`
+    for (const model of candidateModels) {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      try {
+        const response = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(geminiPayload)
+        });
+
+        if (response.ok) {
+          data = await response.json();
+          break;
+        } else {
+          const errText = await response.text();
+          lastError = `Modelo ${model} (${response.status}): ${errText}`;
+        }
+      } catch (networkErr) {
+        lastError = networkErr.message;
+      }
+    }
+
+    if (!data) {
+      return res.status(502).json({
+        error: 'No se pudo obtener respuesta de la API de IA.',
+        details: lastError
       });
     }
 
-    const data = await response.json();
     const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!candidateText) {
-      return res.status(500).json({ error: 'No se obtuvo respuesta de la IA.' });
+      return res.status(500).json({ error: 'No se obtuvo contenido en la respuesta de la IA.' });
     }
 
     let parsedResult;
