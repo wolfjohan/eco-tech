@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>EcoTech AI - Identificador de Residuos Electrónicos</title>
+  <meta name="theme-color" content="#10b981" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center p-4 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="w-full max-w-md flex items-center justify-between py-4 border-b border-slate-800">
+    <div class="flex items-center space-x-2">
+      <div class="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/40 flex items-center justify-center text-brand-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7zm4 4h8m-8 4h5" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
+          EcoTech AI
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">RAEE</span>
+        </h1>
+        <p class="text-xs text-slate-400">Clasificador de basura electrónica</p>
+      </div>
+    </div>
+    <span class="text-xs bg-slate-800 px-2.5 py-1 rounded-full text-slate-300 border border-slate-700">UniProject</span>
+  </header>
+
+  <!-- Main Container -->
+  <main class="w-full max-w-md flex-1 flex flex-col py-6 space-y-6">
+
+    <!-- Hero / Info Banner -->
+    <section class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
+      <h2 class="text-base font-semibold text-slate-200">¿Tienes un aparato o componente en desuso?</h2>
+      <p class="text-xs text-slate-400 mt-1">Toma una foto con tu celular y la IA te dirá si es reciclable, materiales valiosos y cómo desecharlo de forma segura.</p>
+    </section>
+
+    <!-- Upload / Camera Area -->
+    <section id="uploadSection" class="relative group">
+      <!-- Hidden file inputs -->
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" />
+      <input type="file" id="galleryInput" accept="image/*" class="hidden" />
+
+      <!-- Drag / Action Card -->
+      <div id="dropZone" class="border-2 border-dashed border-slate-700 hover:border-brand-500/60 rounded-3xl p-6 flex flex-col items-center justify-center transition-all bg-slate-800/30">
+        
+        <!-- Preview Container -->
+        <div id="previewContainer" class="hidden w-full mb-4">
+          <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-700">
+            <img id="previewImage" src="" alt="Vista previa" class="w-full h-full object-cover" />
+            <button id="btnRemoveImage" class="absolute top-2 right-2 bg-slate-900/80 text-white rounded-full p-2 hover:bg-red-500 transition shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder Icon -->
+        <div id="placeholderUI" class="flex flex-col items-center text-center space-y-3">
+          <div class="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <p class="text-sm font-medium text-slate-300">Selecciona o toma una fotografía</p>
+          <p class="text-xs text-slate-500">Cables, baterías, placas base, periféricos, pantallas...</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 w-full mt-4">
+          <button id="btnCamera" class="flex-1 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-600/20 active:scale-95 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            </svg>
+            Abrir Cámara
+          </button>
+          <button id="btnGallery" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm flex items-center justify-center gap-2 active:scale-95 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Galería
+          </button>
+        </div>
+
+        <!-- Analyze Button (shown after photo selected) -->
+        <button id="btnAnalyze" class="hidden w-full mt-3 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Identificar con IA
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <section id="loadingSection" class="hidden flex-col items-center justify-center py-10 space-y-4">
+      <div class="relative w-16 h-16">
+        <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
+      </div>
+      <div class="text-center">
+        <p class="text-sm font-semibold text-white animate-pulse">Analizando imagen con Gemini IA...</p>
+        <p class="text-xs text-slate-400 mt-1">Clasificando componentes y normativa RAEE</p>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="hidden space-y-4">
+
+      <!-- Not tech waste alert -->
+      <div id="notWasteAlert" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-amber-300 text-sm flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <p id="notWasteMessage">No se reconoció un desecho tecnológico.</p>
+      </div>
+
+      <!-- Main Result Card -->
+      <div id="resultCard" class="bg-slate-800 border border-slate-700 rounded-3xl p-5 space-y-4 shadow-xl">
+        
+        <!-- Header / Status Badge -->
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span id="resultCategory" class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Categoría</span>
+            <h3 id="resultName" class="text-xl font-bold text-white mt-0.5 leading-snug">Nombre del Objeto</h3>
+          </div>
+          <span id="statusBadge" class="px-3 py-1 rounded-full text-xs font-bold shrink-0">
+            Reciclable
+          </span>
+        </div>
+
+        <!-- Materiales Recuperables -->
+        <div class="space-y-1.5 pt-2 border-t border-slate-700/60">
+          <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Materiales y Metales Recuperables
+          </span>
+          <div id="materialsList" class="flex flex-wrap gap-1.5 pt-1"></div>
+        </div>
+
+        <!-- Materiales Peligrosos -->
+        <div class="space-y-1.5 pt-2 border-t border-slate-700/60">
+          <span class="text-xs font-semibold text-amber-400 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Sustancias o Componentes Peligrosos
+          </span>
+          <div id="hazardousList" class="flex flex-wrap gap-1.5 pt-1"></div>
+        </div>
+
+        <!-- Guía de Disposición -->
+        <div class="bg-slate-900/60 rounded-2xl p-3.5 border border-slate-700/50 space-y-1">
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            ¿Cómo y dónde desecharlo?
+          </h4>
+          <p id="disposalGuide" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Precauciones de Seguridad -->
+        <div class="bg-rose-950/20 rounded-2xl p-3.5 border border-rose-900/40 space-y-1">
+          <h4 class="text-xs font-bold text-rose-300 uppercase tracking-wide">⚠️ Precauciones de Manejo</h4>
+          <p id="safetyWarnings" class="text-xs text-rose-200/90 leading-relaxed"></p>
+        </div>
+
+        <!-- Impacto Ambiental -->
+        <div class="text-xs text-slate-400 bg-slate-900/30 p-3 rounded-xl border border-slate-800">
+          <strong class="text-slate-300">Impacto ecológico:</strong> <span id="envValue"></span>
+        </div>
+
+      </div>
+
+      <!-- Reset button -->
+      <button id="btnReset" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium text-sm active:scale-95 transition">
+        Escanear otro residuo
+      </button>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-md text-center py-4 border-t border-slate-800 text-[11px] text-slate-500">
+    Proyecto Universitario • Gestión Sostenible de Residuos RAEE
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

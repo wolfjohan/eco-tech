@@ -1,0 +1,11 @@
+{
+  "name": "eco-tech-recycler",
+  "version": "1.0.0",
+  "description": "App web para identificar desechos tecnologicos (RAEE) con IA y clasificar su reciclaje",
+  "main": "api/classify.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
