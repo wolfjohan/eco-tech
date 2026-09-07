@@ -48,7 +48,7 @@
   <div id="authModal" class="fixed inset-0 z-50 bg-[#070a0f]/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-7 w-full max-w-md text-center shadow-2xl space-y-5 glow-box">
       
-      <!-- Logos amplificados en modal -->
+      <!-- Logos en modal -->
       <div class="flex items-center justify-center gap-4">
         <img src="/logo-app.png" alt="EcoTech" class="w-14 h-14 rounded-2xl object-contain border border-emerald-500/40 bg-slate-800/90 p-1 shadow-md" onerror="this.src='/icono.jpg'" />
         <div class="bg-white px-3 py-1.5 rounded-2xl shadow border border-slate-200 flex items-center justify-center">
@@ -88,20 +88,22 @@
     </div>
   </div>
 
-  <!-- Header Estilo Cyberpunk / HUD con Logos -->
-  <header class="w-full max-w-lg flex items-center justify-between py-4 sm:py-5">
-    <div class="flex items-center space-x-3.5">
+  <!-- Header con Logo ECCI en Rectángulo Ancho -->
+  <header class="w-full max-w-lg flex items-center justify-between py-4 sm:py-5 gap-3">
+    <!-- Lado Izquierdo: Logo EcoTech + Título -->
+    <div class="flex items-center space-x-3 shrink-0">
       <img src="/logo-app.png" alt="EcoTech Logo" class="w-14 h-14 rounded-2xl object-contain border border-emerald-500/40 bg-slate-800/90 p-1 shadow-[0_0_18px_rgba(16,185,129,0.35)]" onerror="this.src='/icono.jpg'" />
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.45)]">
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.45)]">
           EcoTech AI
         </h1>
-        <p class="text-xs text-slate-400 hidden sm:block">Clasificador RAEE con Inteligencia Artificial</p>
+        <p class="text-[11px] text-slate-400 hidden sm:block">Clasificador RAEE con Inteligencia Artificial</p>
       </div>
     </div>
-    <!-- Logo Universidad ECCI Agrandado -->
-    <div class="bg-white px-3 py-1.5 rounded-2xl shadow-lg border border-slate-200 flex items-center justify-center">
-      <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-10 sm:h-11 w-auto object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
+    
+    <!-- Lado Derecho: Logo Universidad ECCI ajustado al tamaño del rectángulo horizontal -->
+    <div class="bg-white px-3 sm:px-4 py-1.5 rounded-2xl shadow-lg border border-slate-200 flex items-center justify-center w-36 sm:w-44 h-14 sm:h-16 shrink-0">
+      <img src="/logo-ecci.png" alt="Universidad ECCI" class="max-h-full max-w-full object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
     </div>
   </header>
 
@@ -118,7 +120,7 @@
       </p>
     </section>
 
-    <!-- Scanner / Reticle HUD Area Agrandado -->
+    <!-- Scanner / Reticle HUD Area -->
     <section id="uploadSection" class="relative bg-[#101722]/90 border border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center shadow-xl">
       
       <!-- Hidden file inputs -->
@@ -356,7 +358,7 @@
       const modal = document.getElementById('authModal');
       const enteredPass = input.value.trim().toLowerCase();
 
-      // Validación tolerante a mayúsculas y espacios
+      // Validación con la contraseña 'proyecto2026'
       if (enteredPass === 'proyecto2026' || enteredPass === 'ecci2026') {
         modal.classList.add('hidden');
         sessionStorage.setItem('ecci_authenticated', 'true');
