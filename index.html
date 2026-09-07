@@ -42,7 +42,7 @@
     }
   </style>
 </head>
-<body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-brand-500 selection:text-white relative">
 
   <!-- Ventana Flotante de Contraseña de Acceso -->
   <div id="authModal" class="fixed inset-0 z-50 bg-[#070a0f]/95 backdrop-blur-md flex items-center justify-center p-4">
@@ -85,6 +85,52 @@
       </form>
 
       <p class="text-xs text-slate-500">Universidad ECCI • 2026</p>
+    </div>
+  </div>
+
+  <!-- Botón Flotante Objetivo General -->
+  <button id="btnOpenObjective" onclick="toggleObjectiveModal(true)" class="fixed bottom-6 right-6 z-40 py-3 px-4 rounded-full bg-[#101722]/95 hover:bg-[#162232] border border-emerald-500/60 text-emerald-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-95 transition backdrop-blur-md">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400 animate-pulse shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Objetivo</span>
+  </button>
+
+  <!-- Modal Flotante de Objetivo General -->
+  <div id="objectiveModal" class="hidden fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-[#111b27] border border-emerald-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 glow-box relative">
+      
+      <!-- Botón cerrar X -->
+      <button onclick="toggleObjectiveModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Encabezado Modal -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-[11px] font-bold text-emerald-400 tracking-wider uppercase">Proyecto Académico</span>
+          <h3 class="text-lg sm:text-xl font-bold text-white leading-snug">Objetivo General</h3>
+        </div>
+      </div>
+
+      <!-- Texto del Objetivo General -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 text-slate-300 text-xs sm:text-sm leading-relaxed text-justify">
+        <p>
+          Desarrollar e implementar un sistema de software basado en visión artificial (<strong class="text-emerald-400 font-semibold">ReciTech IA</strong>) que permita identificar y clasificar residuos de aparatos eléctricos y electrónicos (<strong class="text-emerald-400 font-semibold">RAEE</strong>) mediante captura/carga de imágenes fotográficas, generando recomendaciones contextualizadas para su manejo responsable (reutilización, reparación, reciclaje o disposición especializada), con el fin de mitigar el impacto ambiental negativo y fomentar la <strong class="text-emerald-400 font-semibold">economía circular</strong>.
+        </p>
+      </div>
+
+      <button onclick="toggleObjectiveModal(false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm active:scale-95 transition">
+        Entendido
+      </button>
+
     </div>
   </div>
 
@@ -190,191 +236,4 @@
         </div>
 
         <!-- Analyze Button -->
-        <button id="btnAnalyze" class="hidden w-full mt-3.5 py-4 px-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-base flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(16,185,129,0.45)] active:scale-95 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          Identificar con IA
-        </button>
-
-      </div>
-    </section>
-
-    <!-- Category Pills Section -->
-    <section class="space-y-3">
-      
-      <!-- Electrónica Pequeña -->
-      <div class="flex items-center justify-between p-4 rounded-2xl bg-[#101722]/85 border border-slate-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <span class="text-base font-semibold text-slate-200">Electrónica Pequeña</span>
-        </div>
-        <span class="text-sm px-3 py-1 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700 font-mono tracking-tighter">
-          ●●●
-        </span>
-      </div>
-
-      <!-- Pantallas y Monitores -->
-      <div class="flex items-center justify-between p-4 rounded-2xl bg-[#101722]/85 border border-slate-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <span class="text-base font-semibold text-slate-200">Pantallas y Monitores</span>
-        </div>
-        <span class="text-sm px-3 py-1 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700 font-mono font-bold">
-          TV
-        </span>
-      </div>
-
-      <!-- Baterías -->
-      <div class="flex items-center justify-between p-4 rounded-2xl bg-[#101722]/85 border border-slate-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <span class="text-base font-semibold text-slate-200">Baterías</span>
-        </div>
-        <span class="text-sm px-3 py-1 rounded-xl bg-slate-800 text-emerald-400 border border-slate-700 font-mono">
-          ⚡
-        </span>
-      </div>
-
-    </section>
-
-    <!-- Loading State -->
-    <section id="loadingSection" class="hidden flex-col items-center justify-center py-12 space-y-4">
-      <div class="relative w-20 h-20">
-        <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
-        <div class="absolute inset-0 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin"></div>
-      </div>
-      <div class="text-center">
-        <p class="text-base font-bold text-white animate-pulse">Analizando imagen con ECCI IA...</p>
-        <p class="text-sm text-slate-400 mt-1">Clasificando componentes y normativa RAEE</p>
-      </div>
-    </section>
-
-    <!-- Results Section -->
-    <section id="resultsSection" class="hidden space-y-5">
-
-      <!-- Not tech waste alert -->
-      <div id="notWasteAlert" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-amber-300 text-sm sm:text-base flex items-start gap-3.5">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <p id="notWasteMessage">No se reconoció un desecho tecnológico.</p>
-      </div>
-
-      <!-- Main Result Card -->
-      <div id="resultCard" class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-6 space-y-5 shadow-2xl">
-        
-        <!-- Header / Status Badge -->
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <span id="resultCategory" class="text-xs font-bold uppercase tracking-wider text-emerald-400">Categoría</span>
-            <h3 id="resultName" class="text-2xl font-extrabold text-white mt-1 leading-snug">Nombre del Objeto</h3>
-          </div>
-          <span id="statusBadge" class="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold shrink-0">
-            Reciclable
-          </span>
-        </div>
-
-        <!-- Materiales Recuperables -->
-        <div class="space-y-2 pt-3 border-t border-slate-800">
-          <span class="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Materiales y Metales Recuperables
-          </span>
-          <div id="materialsList" class="flex flex-wrap gap-2 pt-1"></div>
-        </div>
-
-        <!-- Materiales Peligrosos -->
-        <div class="space-y-2 pt-3 border-t border-slate-800">
-          <span class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            Sustancias o Componentes Peligrosos
-          </span>
-          <div id="hazardousList" class="flex flex-wrap gap-2 pt-1"></div>
-        </div>
-
-        <!-- Guía de Disposición -->
-        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-1.5">
-          <h4 class="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            ¿Cómo y dónde desecharlo?
-          </h4>
-          <p id="disposalGuide" class="text-sm text-slate-300 leading-relaxed"></p>
-        </div>
-
-        <!-- Precauciones de Seguridad -->
-        <div class="bg-rose-950/25 rounded-2xl p-4 border border-rose-900/40 space-y-1.5">
-          <h4 class="text-xs sm:text-sm font-bold text-rose-300 uppercase tracking-wide">⚠️ Precauciones de Manejo</h4>
-          <p id="safetyWarnings" class="text-sm text-rose-200/95 leading-relaxed"></p>
-        </div>
-
-        <!-- Impacto Ambiental -->
-        <div class="text-sm text-slate-400 bg-slate-900/50 p-3.5 rounded-2xl border border-slate-800">
-          <strong class="text-slate-300">Impacto ecológico:</strong> <span id="envValue"></span>
-        </div>
-
-      </div>
-
-      <!-- Reset button -->
-      <button id="btnReset" class="w-full py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-base active:scale-95 transition shadow-md">
-        Escanear otro residuo
-      </button>
-
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="w-full max-w-lg text-center py-5 text-xs text-slate-500">
-    Proyecto Universitario • Gestión Sostenible de Residuos RAEE
-  </footer>
-
-  <script src="/app.js"></script>
-
-  <!-- Control de Acceso por Contraseña -->
-  <script>
-    function handleAuth() {
-      const input = document.getElementById('passwordInput');
-      const errorMsg = document.getElementById('authError');
-      const modal = document.getElementById('authModal');
-      const enteredPass = input.value.trim().toLowerCase();
-
-      // Validación con la contraseña 'proyecto2026'
-      if (enteredPass === 'proyecto2026' || enteredPass === 'ecci2026') {
-        modal.classList.add('hidden');
-        sessionStorage.setItem('ecci_authenticated', 'true');
-      } else {
-        errorMsg.classList.remove('hidden');
-        input.value = '';
-        input.focus();
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (sessionStorage.getItem('ecci_authenticated') === 'true') {
-        const modal = document.getElementById('authModal');
-        if (modal) modal.classList.add('hidden');
-      }
-    });
-  </script>
-</body>
-</html>
+        <button id="btnAnalyze" class="hidden w-full mt-3.5 py-4 px-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-base flex items-center justify-center gap-2.5 shadow-
