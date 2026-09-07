@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>EcoTech AI - Identificador de Residuos Electrónicos</title>
-  <meta name="theme-color" content="#10b981" />
+  <meta name="theme-color" content="#0d1520" />
   <link rel="manifest" href="/manifest.json" />
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,35 +14,54 @@
         extend: {
           colors: {
             brand: {
-              50: '#ecfdf5',
-              100: '#d1fae5',
+              400: '#34d399',
               500: '#10b981',
               600: '#059669',
-              700: '#047857',
-              900: '#064e3b'
+            },
+            cyber: {
+              glow: '#00f2fe',
+              neon: '#10b981',
+              card: '#111b27',
+              bg: '#0a0f16'
             }
           }
         }
       }
     }
   </script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    .animate-hud {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    .glow-box {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center p-4 antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 antialiased selection:bg-brand-500 selection:text-white">
 
   <!-- Ventana Flotante de Contraseña de Acceso -->
-  <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl space-y-4">
+  <div id="authModal" class="fixed inset-0 z-50 bg-[#070a0f]/95 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl space-y-4 glow-box">
       
       <!-- Logos -->
       <div class="flex items-center justify-center gap-3">
-        <img src="/logo-app.png" alt="EcoTech" class="w-12 h-12 rounded-xl object-contain border border-slate-700 bg-slate-800/80 shadow" onerror="this.style.display='none'" />
-        <div class="bg-white px-2 py-1 rounded-xl shadow border border-slate-200 flex items-center justify-center">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
+        </div>
+        <div class="bg-white px-2.5 py-1.5 rounded-xl shadow border border-slate-200 flex items-center justify-center">
           <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-8 w-auto object-contain" onerror="this.style.display='none'" />
         </div>
       </div>
 
       <div>
-        <h2 class="text-lg font-bold text-white">Acceso al Sistema</h2>
+        <h2 class="text-lg font-bold text-white tracking-wide">Acceso al Sistema EcoTech</h2>
         <p class="text-xs text-slate-400 mt-1">Ingresa la contraseña del proyecto para usar el clasificador de residuos tecnológicos.</p>
       </div>
 
@@ -53,7 +72,7 @@
             type="password" 
             id="passwordInput" 
             placeholder="Escribe la contraseña" 
-            class="w-full py-3 px-4 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm focus:outline-none focus:border-brand-500 text-center tracking-wider"
+            class="w-full py-3 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-sm focus:outline-none focus:border-emerald-400 text-center tracking-wider"
             required
             autocomplete="off"
           />
@@ -62,8 +81,8 @@
 
         <button 
           type="submit" 
-          class="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-95 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition">
-          Ingresar
+          class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition">
+          Ingresar al Sistema
         </button>
       </form>
 
@@ -71,48 +90,54 @@
     </div>
   </div>
 
-  <!-- Header con logos -->
-  <header class="w-full max-w-md flex items-center justify-between py-4 border-b border-slate-800">
-    <!-- Logo App -->
+  <!-- Header Estilo Cyberpunk / HUD -->
+  <header class="w-full max-w-md flex items-center justify-between py-4">
     <div class="flex items-center space-x-3">
-      <img src="/logo-app.png" alt="EcoTech Logo" class="w-11 h-11 rounded-xl object-contain border border-slate-700 bg-slate-800/80 shadow-md" onerror="this.src='/icono.jpg'" />
+      <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+        </svg>
+      </div>
       <div>
-        <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
+        <h1 class="text-2xl font-extrabold tracking-tight text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]">
           EcoTech AI
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">RAEE</span>
         </h1>
-        <p class="text-xs text-slate-400">Clasificador de basura electrónica</p>
       </div>
     </div>
     <!-- Logo Universidad ECCI -->
-    <div class="bg-white px-2.5 py-1 rounded-xl flex items-center justify-center shadow-md border border-slate-200">
-      <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-8 w-auto object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
+    <div class="bg-white/95 px-2 py-1 rounded-xl shadow-md border border-slate-300">
+      <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-7 w-auto object-contain" onerror="this.style.display='none'" />
     </div>
   </header>
 
   <!-- Main Container -->
-  <main class="w-full max-w-md flex-1 flex flex-col py-6 space-y-6">
+  <main class="w-full max-w-md flex-1 flex flex-col py-2 space-y-5">
 
-    <!-- Hero / Info Banner -->
-    <section class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
-      <h2 class="text-base font-semibold text-slate-400">¿Tienes un aparato o componente en desuso?</h2>
-      <p class="text-xs text-slate-600 mt-1">Toma una foto con tu celular y ECCI.IA te dirá si es reciclable, materiales valiosos y cómo desecharlo de forma segura.</p>
+    <!-- Hero / Info Card Glowing -->
+    <section class="relative bg-gradient-to-b from-[#11202a] to-[#0c161d] border border-emerald-500/40 rounded-3xl p-5 text-center shadow-[0_0_25px_-5px_rgba(16,185,129,0.25)]">
+      <h2 class="text-lg font-bold text-white leading-snug">
+        ¿Tienes un aparato o<br/>componente en desuso?
+      </h2>
+      <p class="text-xs text-slate-300/80 mt-2 leading-relaxed px-2">
+        Toma una foto con tu celular y la IA dirá si es reciclable, materiales valiosos y cómo desecharlo de forma segura.
+      </p>
     </section>
 
-    <!-- Upload / Camera Area -->
-    <section id="uploadSection" class="relative group">
+    <!-- Scanner / Reticle HUD Area -->
+    <section id="uploadSection" class="relative bg-[#101722]/80 border border-slate-800 rounded-3xl p-5 flex flex-col items-center justify-center">
+      
       <!-- Hidden file inputs -->
       <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" />
       <input type="file" id="galleryInput" accept="image/*" class="hidden" />
 
-      <!-- Drag / Action Card -->
-      <div id="dropZone" class="border-2 border-dashed border-slate-700 hover:border-brand-500/60 rounded-3xl p-6 flex flex-col items-center justify-center transition-all bg-slate-800/30">
+      <!-- Drag / Drop Zone Wrapper -->
+      <div id="dropZone" class="w-full flex flex-col items-center justify-center">
         
-        <!-- Preview Container -->
+        <!-- Preview Container (when image is loaded) -->
         <div id="previewContainer" class="hidden w-full mb-4">
-          <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-700">
+          <div class="relative w-full aspect-square max-h-72 rounded-2xl overflow-hidden bg-slate-950 border border-emerald-500/40 shadow-inner">
             <img id="previewImage" src="" alt="Vista previa" class="w-full h-full object-cover" />
-            <button id="btnRemoveImage" class="absolute top-2 right-2 bg-slate-900/80 text-white rounded-full p-2 hover:bg-red-500 transition shadow">
+            <button id="btnRemoveImage" class="absolute top-3 right-3 bg-slate-900/80 text-white rounded-full p-2.5 hover:bg-rose-500 transition shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -120,28 +145,47 @@
           </div>
         </div>
 
-        <!-- Initial Placeholder Icon -->
-        <div id="placeholderUI" class="flex flex-col items-center text-center space-y-3">
-          <div class="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- HUD Reticle Graphic (Placeholder UI) -->
+        <div id="placeholderUI" class="w-full flex flex-col items-center py-4">
+          <div class="relative w-56 h-56 flex items-center justify-center animate-hud">
+            
+            <!-- Corner Brackets -->
+            <div class="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-emerald-400 rounded-tl-lg"></div>
+            <div class="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-emerald-400 rounded-tr-lg"></div>
+            <div class="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-emerald-400 rounded-bl-lg"></div>
+            <div class="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-emerald-400 rounded-br-lg"></div>
+            
+            <!-- Concentric HUD Circles -->
+            <div class="absolute w-44 h-44 rounded-full border border-emerald-500/30 border-dashed"></div>
+            <div class="absolute w-36 h-36 rounded-full border-2 border-emerald-500/50"></div>
+            <div class="absolute w-28 h-28 rounded-full border border-emerald-400/40"></div>
+            
+            <!-- Crosshairs -->
+            <div class="absolute w-52 h-[1px] bg-emerald-500/30"></div>
+            <div class="absolute h-52 w-[1px] bg-emerald-500/30"></div>
+
+            <!-- Central Chip & AI Icon -->
+            <div class="relative z-10 w-16 h-16 rounded-xl bg-[#0e1923] border border-emerald-400/80 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)] text-emerald-400">
+              <span class="text-sm font-black tracking-widest text-emerald-300">AI</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Buttons (Abrir Cámara / Galería) -->
+        <div class="flex gap-3 w-full mt-2">
+          <button id="btnCamera" class="flex-1 py-3.5 px-4 rounded-2xl bg-[#0f342f] hover:bg-emerald-800/80 text-emerald-200 border border-emerald-500/40 font-semibold text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-950 active:scale-95 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-          </div>
-          <p class="text-sm font-medium text-slate-300">Selecciona o toma una fotografía</p>
-          <p class="text-xs text-slate-500">Cables, baterías, placas base, periféricos, pantallas...</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex gap-3 w-full mt-4">
-          <button id="btnCamera" class="flex-1 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-600/20 active:scale-95 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            </svg>
             Abrir Cámara
           </button>
-          <button id="btnGallery" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm flex items-center justify-center gap-2 active:scale-95 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button id="btnGallery" class="py-3.5 px-5 rounded-2xl bg-[#131b28] hover:bg-[#182333] text-slate-300 border border-slate-700/80 font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Galería
@@ -149,8 +193,8 @@
         </div>
 
         <!-- Analyze Button (shown after photo selected) -->
-        <button id="btnAnalyze" class="hidden w-full mt-3 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button id="btnAnalyze" class="hidden w-full mt-3 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.4)] active:scale-95 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           Identificar con IA
@@ -159,11 +203,61 @@
       </div>
     </section>
 
+    <!-- Category Pills Section (as seen in the design) -->
+    <section class="space-y-2.5">
+      
+      <!-- Electrónica Pequeña -->
+      <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#101722]/80 border border-slate-800">
+        <div class="flex items-center gap-3.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-slate-200">Electrónica Pequeña</span>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 font-mono tracking-tighter">
+          ●●●
+        </span>
+      </div>
+
+      <!-- Pantallas y Monitores -->
+      <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#101722]/80 border border-slate-800">
+        <div class="flex items-center gap-3.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-slate-200">Pantallas y Monitores</span>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 font-mono font-bold">
+          TV
+        </span>
+      </div>
+
+      <!-- Baterías -->
+      <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#101722]/80 border border-slate-800">
+        <div class="flex items-center gap-3.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-slate-200">Baterías</span>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 font-mono">
+          ⚡
+        </span>
+      </div>
+
+    </section>
+
     <!-- Loading State -->
     <section id="loadingSection" class="hidden flex-col items-center justify-center py-10 space-y-4">
       <div class="relative w-16 h-16">
         <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
-        <div class="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin"></div>
       </div>
       <div class="text-center">
         <p class="text-sm font-semibold text-white animate-pulse">Analizando imagen con ECCI IA...</p>
@@ -183,12 +277,12 @@
       </div>
 
       <!-- Main Result Card -->
-      <div id="resultCard" class="bg-slate-800 border border-slate-700 rounded-3xl p-5 space-y-4 shadow-xl">
+      <div id="resultCard" class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-5 space-y-4 shadow-2xl">
         
         <!-- Header / Status Badge -->
         <div class="flex items-start justify-between gap-2">
           <div>
-            <span id="resultCategory" class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Categoría</span>
+            <span id="resultCategory" class="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">Categoría</span>
             <h3 id="resultName" class="text-xl font-bold text-white mt-0.5 leading-snug">Nombre del Objeto</h3>
           </div>
           <span id="statusBadge" class="px-3 py-1 rounded-full text-xs font-bold shrink-0">
@@ -197,7 +291,7 @@
         </div>
 
         <!-- Materiales Recuperables -->
-        <div class="space-y-1.5 pt-2 border-t border-slate-700/60">
+        <div class="space-y-1.5 pt-2 border-t border-slate-800">
           <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -208,7 +302,7 @@
         </div>
 
         <!-- Materiales Peligrosos -->
-        <div class="space-y-1.5 pt-2 border-t border-slate-700/60">
+        <div class="space-y-1.5 pt-2 border-t border-slate-800">
           <span class="text-xs font-semibold text-amber-400 flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -219,9 +313,9 @@
         </div>
 
         <!-- Guía de Disposición -->
-        <div class="bg-slate-900/60 rounded-2xl p-3.5 border border-slate-700/50 space-y-1">
+        <div class="bg-slate-900/80 rounded-2xl p-3.5 border border-slate-800 space-y-1">
           <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -237,14 +331,14 @@
         </div>
 
         <!-- Impacto Ambiental -->
-        <div class="text-xs text-slate-400 bg-slate-900/30 p-3 rounded-xl border border-slate-800">
+        <div class="text-xs text-slate-400 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
           <strong class="text-slate-300">Impacto ecológico:</strong> <span id="envValue"></span>
         </div>
 
       </div>
 
       <!-- Reset button -->
-      <button id="btnReset" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium text-sm active:scale-95 transition">
+      <button id="btnReset" class="w-full py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium text-sm active:scale-95 transition">
         Escanear otro residuo
       </button>
 
@@ -253,20 +347,20 @@
   </main>
 
   <!-- Footer -->
-  <footer class="w-full max-w-md text-center py-4 border-t border-slate-800 text-[11px] text-slate-500">
+  <footer class="w-full max-w-md text-center py-4 text-[11px] text-slate-500">
     Proyecto Universitario • Gestión Sostenible de Residuos RAEE
   </footer>
 
   <script src="/app.js"></script>
 
-  <!-- Lógica de Control de Acceso por Contraseña -->
+  <!-- Control de Acceso por Contraseña -->
   <script>
     function handleAuth() {
       const input = document.getElementById('passwordInput');
       const errorMsg = document.getElementById('authError');
       const modal = document.getElementById('authModal');
 
-      if (input.value.trim() === 'ecci2026') {
+      if (input.value.trim() === 'ecci2027') {
         modal.classList.add('hidden');
         sessionStorage.setItem('ecci_authenticated', 'true');
       } else {
@@ -276,7 +370,6 @@
       }
     }
 
-    // Comprobar si ya ingresó en la sesión actual
     window.addEventListener('DOMContentLoaded', () => {
       if (sessionStorage.getItem('ecci_authenticated') === 'true') {
         const modal = document.getElementById('authModal');
