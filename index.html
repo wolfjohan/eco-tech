@@ -41,10 +41,51 @@
       box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3);
     }
   </style>
+
+  <!-- Sistema Nuevo de Verificación de Contraseña (2028) -->
+  <script>
+    if (localStorage.getItem('ecotech_access') === '2028' || sessionStorage.getItem('ecotech_access') === '2028') {
+      document.write('<style>#authModal { display: none !important; }</style>');
+    }
+
+    function checkPassword() {
+      var field = document.getElementById('passInput');
+      var errorBox = document.getElementById('passError');
+      var modal = document.getElementById('authModal');
+      
+      if (!field) return;
+      var val = field.value.trim();
+
+      // Contraseña única: 2028
+      if (val === '2028') {
+        localStorage.setItem('ecotech_access', '2028');
+        sessionStorage.setItem('ecotech_access', '2028');
+        if (modal) {
+          modal.remove(); // Quita la ventana de la pantalla inmediatamente
+        }
+      } else {
+        if (errorBox) {
+          errorBox.style.display = 'block';
+        }
+        field.value = '';
+        field.focus();
+      }
+    }
+
+    function toggleObjectiveModal(show) {
+      var modal = document.getElementById('objectiveModal');
+      if (!modal) return;
+      if (show) {
+        modal.style.display = 'flex';
+      } else {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
 </head>
 <body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-brand-500 selection:text-white relative">
 
-  <!-- Ventana Flotante de Contraseña de Acceso -->
+  <!-- NUEVA VENTANA DE CONTRASEÑA (Clave: 2028) -->
   <div id="authModal" class="fixed inset-0 z-50 bg-[#070a0f]/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-7 w-full max-w-md text-center shadow-2xl space-y-5 glow-box">
       
@@ -58,32 +99,32 @@
 
       <div>
         <h2 class="text-xl font-bold text-white tracking-wide">Acceso al Sistema EcoTech</h2>
-        <p class="text-sm text-slate-300 mt-1.5">Ingresa la contraseña del proyecto para usar el clasificador de residuos tecnológicos.</p>
+        <p class="text-sm text-slate-300 mt-1.5">Ingresa la contraseña para desbloquear la aplicación.</p>
       </div>
 
-      <!-- Formulario de contraseña (2026) -->
-      <form id="authForm" class="space-y-4" onsubmit="event.preventDefault(); handleAuth();">
+      <!-- Contenedor sin form para evitar recargas en celulares -->
+      <div class="space-y-4">
         <div>
           <input 
             type="password" 
-            id="passwordInput" 
-            placeholder="Contraseña (4 dígitos)" 
-            inputmode="numeric"
-            class="w-full py-3.5 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-lg focus:outline-none focus:border-emerald-400 text-center tracking-widest font-mono"
-            required
+            id="passInput" 
+            placeholder="Escribe la contraseña" 
+            class="w-full py-3.5 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-base focus:outline-none focus:border-emerald-400 text-center tracking-wider"
             autocomplete="off"
             autocapitalize="none"
             spellcheck="false"
+            onkeydown="if(event.key === 'Enter') checkPassword();"
           />
-          <p id="authError" class="hidden text-rose-400 text-sm mt-2 font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
+          <p id="passError" style="display: none;" class="text-rose-400 text-sm mt-2 font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
         </div>
 
         <button 
-          type="submit" 
-          class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-base shadow-lg shadow-emerald-600/30 transition">
+          type="button" 
+          onclick="checkPassword();"
+          class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-base shadow-lg shadow-emerald-600/30 transition cursor-pointer">
           Ingresar al Sistema
         </button>
-      </form>
+      </div>
 
       <p class="text-xs text-slate-500">Universidad ECCI • 2026</p>
     </div>
@@ -98,7 +139,7 @@
   </button>
 
   <!-- Modal Flotante de Objetivo General -->
-  <div id="objectiveModal" class="hidden fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+  <div id="objectiveModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
     <div class="bg-[#111b27] border border-emerald-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 glow-box relative">
       
       <!-- Botón cerrar X -->
@@ -112,118 +153,4 @@
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-        </div>
-        <div>
-          <span class="text-[11px] font-bold text-emerald-400 tracking-wider uppercase">Proyecto Académico</span>
-          <h3 class="text-lg sm:text-xl font-bold text-white leading-snug">Objetivo General</h3>
-        </div>
-      </div>
-
-      <!-- Texto del Objetivo General -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 text-slate-300 text-xs sm:text-sm leading-relaxed text-justify">
-        <p>
-          Desarrollar e implementar un sistema de software basado en visión artificial (<strong class="text-emerald-400 font-semibold">ReciTech IA</strong>) que permita identificar y clasificar residuos de aparatos eléctricos y electrónicos (<strong class="text-emerald-400 font-semibold">RAEE</strong>) mediante captura/carga de imágenes fotográficas, generando recomendaciones contextualizadas para su manejo responsable (reutilización, reparación, reciclaje o disposición especializada), con el fin de mitigar el impacto ambiental negativo y fomentar la <strong class="text-emerald-400 font-semibold">economía circular</strong>.
-        </p>
-      </div>
-
-      <button onclick="toggleObjectiveModal(false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm active:scale-95 transition">
-        Entendido
-      </button>
-
-    </div>
-  </div>
-
-  <!-- Header con Logo ECCI en Rectángulo Ancho -->
-  <header class="w-full max-w-lg flex items-center justify-between py-4 sm:py-5 gap-3">
-    <!-- Lado Izquierdo: Logo EcoTech + Título -->
-    <div class="flex items-center space-x-3 shrink-0">
-      <img src="/logo-app.png" alt="EcoTech Logo" class="w-14 h-14 rounded-2xl object-contain border border-emerald-500/40 bg-slate-800/90 p-1 shadow-[0_0_18px_rgba(16,185,129,0.35)]" onerror="this.src='/icono.jpg'" />
-      <div>
-        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.45)]">
-          EcoTech AI
-        </h1>
-        <p class="text-[11px] text-slate-400 hidden sm:block">Clasificador RAEE con Inteligencia Artificial</p>
-      </div>
-    </div>
-    
-    <!-- Lado Derecho: Logo Universidad ECCI ajustado al tamaño del rectángulo horizontal -->
-    <div class="bg-white px-3 sm:px-4 py-1.5 rounded-2xl shadow-lg border border-slate-200 flex items-center justify-center w-36 sm:w-44 h-14 sm:h-16 shrink-0">
-      <img src="/logo-ecci.png" alt="Universidad ECCI" class="max-h-full max-w-full object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="w-full max-w-lg flex-1 flex flex-col py-2 space-y-6">
-
-    <!-- Hero / Info Card Glowing -->
-    <section class="relative bg-gradient-to-b from-[#11202a] to-[#0c161d] border border-emerald-500/40 rounded-3xl p-6 text-center shadow-[0_0_25px_-5px_rgba(16,185,129,0.25)]">
-      <h2 class="text-xl sm:text-2xl font-bold text-white leading-snug">
-        ¿Tienes un aparato o<br/>componente en desuso?
-      </h2>
-      <p class="text-sm text-slate-300/90 mt-2.5 leading-relaxed px-2">
-        Toma una foto con tu celular y la IA dirá si es reciclable, materiales valiosos y cómo desecharlo de forma segura.
-      </p>
-    </section>
-
-    <!-- Scanner / Reticle HUD Area -->
-    <section id="uploadSection" class="relative bg-[#101722]/90 border border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center shadow-xl">
-      
-      <!-- Hidden file inputs -->
-      <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" />
-      <input type="file" id="galleryInput" accept="image/*" class="hidden" />
-
-      <!-- Drag / Drop Zone Wrapper -->
-      <div id="dropZone" class="w-full flex flex-col items-center justify-center">
-        
-        <!-- Preview Container (when image is loaded) -->
-        <div id="previewContainer" class="hidden w-full mb-5">
-          <div class="relative w-full aspect-square max-h-80 rounded-2xl overflow-hidden bg-slate-950 border-2 border-emerald-500/40 shadow-inner">
-            <img id="previewImage" src="" alt="Vista previa" class="w-full h-full object-cover" />
-            <button id="btnRemoveImage" class="absolute top-3 right-3 bg-slate-900/85 text-white rounded-full p-3 hover:bg-rose-500 transition shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- HUD Reticle Graphic (Placeholder UI) -->
-        <div id="placeholderUI" class="w-full flex flex-col items-center py-5">
-          <div class="relative w-64 h-64 flex items-center justify-center animate-hud">
-            
-            <!-- Corner Brackets -->
-            <div class="absolute top-1 left-1 w-10 h-10 border-t-2 border-l-2 border-emerald-400 rounded-tl-xl"></div>
-            <div class="absolute top-1 right-1 w-10 h-10 border-t-2 border-r-2 border-emerald-400 rounded-tr-xl"></div>
-            <div class="absolute bottom-1 left-1 w-10 h-10 border-b-2 border-l-2 border-emerald-400 rounded-bl-xl"></div>
-            <div class="absolute bottom-1 right-1 w-10 h-10 border-b-2 border-r-2 border-emerald-400 rounded-br-xl"></div>
-            
-            <!-- Concentric HUD Circles -->
-            <div class="absolute w-52 h-52 rounded-full border border-emerald-500/30 border-dashed"></div>
-            <div class="absolute w-44 h-44 rounded-full border-2 border-emerald-500/50"></div>
-            <div class="absolute w-32 h-32 rounded-full border border-emerald-400/40"></div>
-            
-            <!-- Crosshairs -->
-            <div class="absolute w-60 h-[1px] bg-emerald-500/30"></div>
-            <div class="absolute h-60 w-[1px] bg-emerald-500/30"></div>
-
-            <!-- Central Chip & AI Icon -->
-            <div class="relative z-10 w-20 h-20 rounded-2xl bg-[#0e1923] border border-emerald-400/80 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.45)] text-emerald-400">
-              <span class="text-base font-black tracking-widest text-emerald-300">AI</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-              </svg>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Action Buttons (Abrir Cámara / Galería) -->
-        <div class="flex gap-3.5 w-full mt-3">
-          <button id="btnCamera" class="flex-1 py-4 px-5 rounded-2xl bg-[#0f342f] hover:bg-emerald-800/80 text-emerald-200 border border-emerald-500/40 font-bold text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-950 active:scale-95 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Abrir Cámara
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.
