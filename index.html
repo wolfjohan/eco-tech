@@ -253,6 +253,44 @@
         c.style.display = isHidden ? 'inline' : 'none';
       }
     }
+
+    // --- FUNCIÓN GEOLOCALIZACIÓN GOOGLE MAPS (PUNTOS RAEE BOGOTÁ) ---
+    function openDisposalMaps(customQuery) {
+      var query = customQuery;
+      if (!query) {
+        var catEl = document.getElementById('resultCategory');
+        var nameEl = document.getElementById('resultName');
+        var cat = (catEl ? catEl.textContent : '').toLowerCase();
+        var name = (nameEl ? nameEl.textContent : '').toLowerCase();
+        
+        if (cat.indexOf('batería') !== -1 || name.indexOf('batería') !== -1 || name.indexOf('pila') !== -1 || cat.indexOf('acumulador') !== -1) {
+          query = 'Contenedor Pilas con el ambiente Bogota';
+        } else if (cat.indexOf('informática') !== -1 || cat.indexOf('periférico') !== -1 || cat.indexOf('pequeña') !== -1 || name.indexOf('celular') !== -1 || name.indexOf('cable') !== -1 || name.indexOf('computador') !== -1 || name.indexOf('mouse') !== -1 || name.indexOf('teclado') !== -1 || name.indexOf('tarjeta') !== -1) {
+          query = 'Punto EcoComputo Bogota';
+        } else if (name.indexOf('bombillo') !== -1 || name.indexOf('lámpara') !== -1 || name.indexOf('tubo') !== -1) {
+          query = 'Lumina recoleccion iluminacion Bogota';
+        } else if (cat.indexOf('pantalla') !== -1 || cat.indexOf('monitor') !== -1 || name.indexOf('televisor') !== -1) {
+          query = 'Puntos EcoComputo Bogota centros de acopio RAEE';
+        } else {
+          query = 'Puntos Limpios Secretaria Distrital de Ambiente Bogota RAEE';
+        }
+      }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          var lat = pos.coords.latitude;
+          var lon = pos.coords.longitude;
+          var url = 'https://www.google.com/maps/search/' + encodeURIComponent(query) + '/@' + lat + ',' + lon + ',14z';
+          window.open(url, '_blank');
+        }, function() {
+          var url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+          window.open(url, '_blank');
+        }, { timeout: 3500 });
+      } else {
+        var url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+        window.open(url, '_blank');
+      }
+    }
   </script>
 </head>
 <body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-emerald-500 selection:text-white relative">
@@ -417,9 +455,14 @@
           <p class="text-rose-400 font-bold uppercase tracking-wider text-[11px]">⚠️ Riesgos / Toxicidad</p>
           <p class="text-rose-200/90 mt-1" id="catModalDanger"></p>
         </div>
-        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
-          <p class="text-cyan-400 font-bold uppercase tracking-wider text-[11px]">📍 Punto de Entrega en Bogotá</p>
-          <p class="text-slate-200 mt-1" id="catModalDisposal"></p>
+        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 space-y-2">
+          <div>
+            <p class="text-cyan-400 font-bold uppercase tracking-wider text-[11px]">📍 Punto de Entrega en Bogotá</p>
+            <p class="text-slate-200 mt-1" id="catModalDisposal"></p>
+          </div>
+          <button type="button" onclick="openDisposalMaps(document.getElementById('catModalTitle').textContent + ' recoleccion Bogota')" class="w-full py-2 px-3 rounded-xl bg-cyan-950/40 hover:bg-cyan-900/60 text-cyan-300 border border-cyan-500/40 font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition cursor-pointer">
+            <span>🗺️ Abrir mapa de esta categoría</span>
+          </button>
         </div>
       </div>
       <button onclick="toggleModal('categoryModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm">Cerrar Guía</button>
@@ -572,9 +615,14 @@
           <div id="hazardousList" class="flex flex-wrap gap-2 pt-1"></div>
         </div>
 
-        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-1.5">
-          <h4 class="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">📍 ¿Cómo y dónde desecharlo?</h4>
-          <p id="disposalGuide" class="text-sm text-slate-300 leading-relaxed"></p>
+        <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-2.5">
+          <div class="space-y-1">
+            <h4 class="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wide">📍 ¿Cómo y dónde desecharlo?</h4>
+            <p id="disposalGuide" class="text-sm text-slate-300 leading-relaxed"></p>
+          </div>
+          <button id="btnOpenMaps" type="button" onclick="openDisposalMaps()" class="w-full py-2.5 px-3 rounded-xl bg-cyan-950/40 hover:bg-cyan-900/60 text-cyan-300 border border-cyan-500/40 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 transition cursor-pointer shadow-sm">
+            <span>🗺️ Ver Puntos de Entrega en Google Maps</span>
+          </button>
         </div>
 
         <div class="bg-rose-950/25 rounded-2xl p-4 border border-rose-900/40 space-y-1.5">
