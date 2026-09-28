@@ -6,43 +6,21 @@
   <title>EcoTech AI - Identificador de Residuos Electrónicos</title>
   <meta name="theme-color" content="#0a0f16" />
   
-  <!-- Encabezados Anti-Caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
   <link rel="manifest" href="/manifest.json" />
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              400: '#34d399',
-              500: '#10b981',
-              600: '#059669',
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     @keyframes pulseGlow {
       0%, 100% { opacity: 0.75; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.025); }
     }
-    .animate-hud {
-      animation: pulseGlow 3s ease-in-out infinite;
-    }
-    .glow-box {
-      box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3);
-    }
+    .animate-hud { animation: pulseGlow 3s ease-in-out infinite; }
+    .glow-box { box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3); }
   </style>
 
-  <!-- Sistema de Verificación de Contraseña (2028) -->
   <script>
     if (localStorage.getItem('ecotech_access') === '2028' || sessionStorage.getItem('ecotech_access') === '2028') {
       document.write('<style>#authModal { display: none !important; }</style>');
@@ -52,188 +30,184 @@
       var field = document.getElementById('passInput');
       var errorBox = document.getElementById('passError');
       var modal = document.getElementById('authModal');
-      
       if (!field) return;
-      var val = field.value.trim();
-
-      // Contraseña: 2028
-      if (val === '2028') {
+      if (field.value.trim() === '2028') {
         localStorage.setItem('ecotech_access', '2028');
         sessionStorage.setItem('ecotech_access', '2028');
-        if (modal) {
-          modal.remove();
-        }
+        if (modal) modal.remove();
       } else {
-        if (errorBox) {
-          errorBox.style.display = 'block';
-        }
+        if (errorBox) errorBox.style.display = 'block';
         field.value = '';
         field.focus();
       }
     }
 
-    // Control de Modales Flotantes
-    function toggleModal(modalId, show) {
-      var modal = document.getElementById(modalId);
-      if (!modal) return;
-      modal.style.display = show ? 'flex' : 'none';
+    function toggleModal(id, show) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = show ? 'flex' : 'none';
     }
 
-    // Contenido dinámico para las Categorías Inferiores
     const categoryData = {
       pequena: {
-        title: "Electrónica Pequeña y Periféricos",
+        title: "Electrónica Pequeña",
         badge: "RAEE Línea Gris / TIC",
         icon: "📱",
-        items: "Smartphones, cargadores, cables USB, mouses, teclados, tarjetas madre (PCB), routers y audífonos.",
-        materials: "Cobre de alta pureza, oro en conectores, plata, estaño, aluminio y polímeros ignífugos (plásticos ABS/PC).",
-        danger: "Soldaduras con plomo en modelos antiguos y condensadores con electrolitos inflamables.",
-        disposal: "Puntos posconsumo del programa EcoCómputo en centros comerciales y puntos limpios de la Secretaría de Ambiente en Bogotá."
+        items: "Smartphones, cargadores, cables USB, mouses, teclados, tarjetas PCB, routers y audífonos.",
+        materials: "Cobre de alta pureza, oro en conectores, plata, estaño y plásticos ABS/PC.",
+        danger: "Soldaduras con plomo y condensadores con electrolitos inflamables.",
+        disposal: "Puntos del programa EcoCómputo en centros comerciales y puntos limpios en Bogotá."
       },
       pantallas: {
-        title: "Pantallas, Monitores y Televisores",
+        title: "Pantallas y Monitores",
         badge: "RAEE Línea Marrón / Visual",
         icon: "📺",
-        items: "Monitores LED/LCD, pantallas de portátiles, tabletas y televisores CRT (tubo de rayos catódicos).",
-        materials: "Vidrio técnico recuperable, marcos de aluminio, placas electrónicas de control y conductores de cobre.",
-        danger: "Lámparas fluorescentes CCFL con vapor de mercurio en pantallas LCD antiguas y fósforo/plomo en tubos CRT. No romper la pantalla para evitar dispersión de gases tóxicos.",
-        disposal: "Centros de acopio especializados con desmantelamiento técnico controlado y gestores ambientales autorizados de RAEE."
+        items: "Monitores LED/LCD, pantallas de portátiles, tablets y televisores CRT.",
+        materials: "Vidrio técnico recuperable, marcos de aluminio y placas de control.",
+        danger: "Vapor de mercurio en lámparas CCFL y fósforo/plomo en tubos CRT. No romper la pantalla.",
+        disposal: "Centros de acopio especializados con desmantelamiento técnico controlado."
       },
       baterias: {
-        title: "Baterías y Acumuladores de Energía",
-        badge: "Residuos de Alto Riesgo",
+        title: "Baterías y Acumuladores",
+        badge: "Residuo de Alto Riesgo",
         icon: "⚡",
-        items: "Baterías de ion-litio de celulares y laptops, pilas alcalinas (AA/AAA), acumuladores de plomo-ácido y power banks.",
-        materials: "Cobalto, litio, níquel, manganeso y carcasas metálicas reutilizables.",
-        danger: "Riesgo crítico de ignición térmica por perforación o cortocircuito. Si entran en contacto con vertederos o agua, un solo acumulador puede contaminar miles de litros con metales pesados.",
-        disposal: "Contenedores tubulares del programa 'Pilas con el Ambiente' ubicados en almacenes Éxito, Jumbo, centros comerciales y estaciones autorizadas."
+        items: "Baterías de ion-litio de celulares y laptops, pilas AA/AAA y power banks.",
+        materials: "Cobalto, litio, níquel y carcasas metálicas reutilizables.",
+        danger: "Riesgo de ignición por perforación. Alta contaminación de fuentes hídricas por metales pesados.",
+        disposal: "Contenedores tubulares de 'Pilas con el Ambiente' en almacenes de cadena y centros comerciales."
       }
     };
 
     function showCategoryModal(type) {
-      const data = categoryData[type];
-      if (!data) return;
-
-      document.getElementById('catModalIcon').textContent = data.icon;
-      document.getElementById('catModalTitle').textContent = data.title;
-      document.getElementById('catModalBadge').textContent = data.badge;
-      document.getElementById('catModalItems').textContent = data.items;
-      document.getElementById('catModalMaterials').textContent = data.materials;
-      document.getElementById('catModalDanger').textContent = data.danger;
-      document.getElementById('catModalDisposal').textContent = data.disposal;
-
+      const d = categoryData[type];
+      if (!d) return;
+      document.getElementById('catModalIcon').textContent = d.icon;
+      document.getElementById('catModalTitle').textContent = d.title;
+      document.getElementById('catModalBadge').textContent = d.badge;
+      document.getElementById('catModalItems').textContent = d.items;
+      document.getElementById('catModalMaterials').textContent = d.materials;
+      document.getElementById('catModalDanger').textContent = d.danger;
+      document.getElementById('catModalDisposal').textContent = d.disposal;
       toggleModal('categoryModal', true);
     }
   </script>
 </head>
-<body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-brand-500 selection:text-white relative">
+<body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-emerald-500 selection:text-white relative">
 
-  <!-- VENTANA DE CONTRASEÑA (Clave: 2028) -->
+  <!-- MODAL DE ACCESO (Clave: 2028) -->
   <div id="authModal" class="fixed inset-0 z-50 bg-[#070a0f]/95 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-[#111b27] border border-emerald-500/30 rounded-3xl p-7 w-full max-w-md text-center shadow-2xl space-y-5 glow-box">
-      
-      <!-- Logos en modal -->
       <div class="flex items-center justify-center gap-4">
         <img src="/logo-app.png" alt="EcoTech" class="w-14 h-14 rounded-2xl object-contain border border-emerald-500/40 bg-slate-800/90 p-1 shadow-md" onerror="this.src='/icono.jpg'" />
         <div class="bg-white px-3 py-1.5 rounded-2xl shadow border border-slate-200 flex items-center justify-center">
           <img src="/logo-ecci.png" alt="Universidad ECCI" class="h-10 w-auto object-contain" onerror="this.src='/imagen-removebg-preview(24).png'" />
         </div>
       </div>
-
       <div>
         <h2 class="text-xl font-bold text-white tracking-wide">Acceso al Sistema EcoTech</h2>
         <p class="text-sm text-slate-300 mt-1.5">Ingresa la contraseña para desbloquear la aplicación.</p>
       </div>
-
       <div class="space-y-4">
-        <div>
-          <input 
-            type="password" 
-            id="passInput" 
-            placeholder="Escribe la contraseña" 
-            class="w-full py-3.5 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-base focus:outline-none focus:border-emerald-400 text-center tracking-wider"
-            autocomplete="off"
-            autocapitalize="none"
-            spellcheck="false"
-            onkeydown="if(event.key === 'Enter') checkPassword();"
-          />
-          <p id="passError" style="display: none;" class="text-rose-400 text-sm mt-2 font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
-        </div>
-
-        <button 
-          type="button" 
-          onclick="checkPassword();"
-          class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-base shadow-lg shadow-emerald-600/30 transition cursor-pointer">
-          Ingresar al Sistema
-        </button>
+        <input type="password" id="passInput" placeholder="Escribe la contraseña" class="w-full py-3.5 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-base focus:outline-none focus:border-emerald-400 text-center tracking-wider" autocomplete="off" onkeydown="if(event.key === 'Enter') checkPassword();" />
+        <p id="passError" style="display: none;" class="text-rose-400 text-sm font-medium">Contraseña incorrecta. Inténtalo de nuevo.</p>
+        <button type="button" onclick="checkPassword();" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-base shadow-lg shadow-emerald-600/30 transition cursor-pointer">Ingresar al Sistema</button>
       </div>
-
       <p class="text-xs text-slate-500">Universidad ECCI • 2026</p>
     </div>
   </div>
 
-  <!-- Botones Flotantes Inferiores (Ficha Académica y Objetivo) -->
+  <!-- BOTONES FLOTANTES: OBJETIVO Y FICHA ACADÉMICA -->
   <div class="fixed bottom-6 right-5 z-40 flex flex-col gap-2.5 items-end">
-    <!-- Botón Ficha Técnica / Créditos -->
     <button onclick="toggleModal('creditsModal', true)" class="py-2.5 px-4 rounded-full bg-[#111b27]/95 hover:bg-[#182535] border border-cyan-500/60 text-cyan-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_18px_rgba(6,182,212,0.3)] active:scale-95 transition backdrop-blur-md cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-      <span>Ficha Académica</span>
+      <span>🎓 Ficha Académica</span>
     </button>
-
-    <!-- Botón Objetivo General -->
     <button onclick="toggleModal('objectiveModal', true)" class="py-2.5 px-4 rounded-full bg-[#101722]/95 hover:bg-[#162232] border border-emerald-500/60 text-emerald-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-95 transition backdrop-blur-md cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400 animate-pulse shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>Objetivo</span>
+      <span>🎯 Objetivo</span>
     </button>
   </div>
 
-  <!-- Modal 1: Objetivo General -->
+  <!-- MODAL 1: OBJETIVO GENERAL -->
   <div id="objectiveModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
     <div class="bg-[#111b27] border border-emerald-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 glow-box relative">
-      <button onclick="toggleModal('objectiveModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
+      <button onclick="toggleModal('objectiveModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">✕</button>
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-        </div>
+        <span class="text-2xl">🎯</span>
         <div>
           <span class="text-[11px] font-bold text-emerald-400 tracking-wider uppercase">Proyecto Académico</span>
-          <h3 class="text-lg sm:text-xl font-bold text-white leading-snug">Objetivo General</h3>
+          <h3 class="text-lg font-bold text-white">Objetivo General</h3>
         </div>
       </div>
-
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 text-slate-300 text-xs sm:text-sm leading-relaxed text-justify">
-        <p>
-          Desarrollar e implementar un sistema de software basado en visión artificial (<strong class="text-emerald-400 font-semibold">ReciTech IA</strong>) que permita identificar y clasificar residuos de aparatos eléctricos y electrónicos (<strong class="text-emerald-400 font-semibold">RAEE</strong>) mediante captura/carga de imágenes fotográficas, generando recomendaciones contextualizadas para su manejo responsable (reutilización, reparación, reciclaje o disposición especializada), con el fin de mitigar el impacto ambiental negativo y fomentar la <strong class="text-emerald-400 font-semibold">economía circular</strong>.
-        </p>
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 text-slate-300 text-xs sm:text-sm leading-relaxed text-justify">
+        <p>Desarrollar e implementar un sistema de software basado en visión artificial (<strong class="text-emerald-400 font-semibold">ReciTech IA</strong>) que permita identificar y clasificar residuos de aparatos eléctricos y electrónicos (<strong class="text-emerald-400 font-semibold">RAEE</strong>) mediante captura/carga de imágenes fotográficas, generando recomendaciones contextualizadas para su manejo responsable (reutilización, reparación, reciclaje o disposición especializada), con el fin de mitigar el impacto ambiental negativo y fomentar la <strong class="text-emerald-400 font-semibold">economía circular</strong>.</p>
       </div>
-
-      <button onclick="toggleModal('objectiveModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm active:scale-95 transition cursor-pointer">
-        Entendido
-      </button>
+      <button onclick="toggleModal('objectiveModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm">Entendido</button>
     </div>
   </div>
 
-  <!-- Modal 2: Ficha Académica y Créditos del Proyecto (AQUÍ ESTÁN TUS DATOS: LÍNEAS 200-240) -->
+  <!-- MODAL 2: FICHA ACADÉMICA / DATOS (AQUÍ ESTÁN TUS DATOS) -->
   <div id="creditsModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
     <div class="bg-[#111b27] border border-cyan-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 relative max-h-[90vh] overflow-y-auto">
-      <button onclick="toggleModal('creditsModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
+      <button onclick="toggleModal('creditsModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">✕</button>
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1
+        <span class="text-2xl">🎓</span>
+        <div>
+          <span class="text-[11px] font-bold text-cyan-400 tracking-wider uppercase">Ficha Técnica Oficial</span>
+          <h3 class="text-lg font-bold text-white">Créditos del Proyecto</h3>
+        </div>
+      </div>
+      <div class="space-y-3 text-xs sm:text-sm text-slate-300">
+        <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800">
+          <p class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Institución</p>
+          <p class="text-white font-bold text-sm mt-0.5">Universidad ECCI</p>
+          <p class="text-slate-400 text-xs">Facultad de Ingeniería • Bogotá, Colombia</p>
+        </div>
+        <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 space-y-1">
+          <p class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Equipo de Desarrollo</p>
+          <div class="flex items-center justify-between text-white font-medium text-xs">
+            <span>Johan Steven Rojas Diaz</span>
+            <span class="text-emerald-400 font-mono text-[11px]">Código: 47155</span>
+          </div>
+        </div>
+        <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 space-y-1.5">
+          <p class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Tecnologías Implementadas</p>
+          <ul class="space-y-1 text-slate-300 text-xs">
+            <li>• <strong class="text-white">Motor IA:</strong> Google Gemini Multimodal Flash Vision</li>
+            <li>• <strong class="text-white">Frontend:</strong> HTML5 PWA & Tailwind CSS</li>
+            <li>• <strong class="text-white">Backend:</strong> Vercel Serverless Functions (Node.js)</li>
+            <li>• <strong class="text-white">Dominio:</strong> proyectos-ecci.xyz</li>
+          </ul>
+        </div>
+      </div>
+      <button onclick="toggleModal('creditsModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- MODAL 3: GUÍA DE CATEGORÍAS RAEE -->
+  <div id="categoryModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+    <div class="bg-[#111b27] border border-emerald-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 glow-box relative max-h-[90vh] overflow-y-auto">
+      <button onclick="toggleModal('categoryModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">✕</button>
+      <div class="flex items-center gap-3">
+        <div class="text-3xl" id="catModalIcon">📱</div>
+        <div>
+          <span class="text-[11px] font-bold text-emerald-400 tracking-wider uppercase" id="catModalBadge">Categoría RAEE</span>
+          <h3 class="text-lg font-bold text-white" id="catModalTitle">Título</h3>
+        </div>
+      </div>
+      <div class="space-y-2.5 text-xs text-slate-300">
+        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+          <p class="text-emerald-400 font-bold uppercase tracking-wider">¿Qué incluye?</p>
+          <p class="text-slate-200 mt-1" id="catModalItems"></p>
+        </div>
+        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+          <p class="text-emerald-400 font-bold uppercase tracking-wider">Materiales Recuperables</p>
+          <p class="text-slate-200 mt-1" id="catModalMaterials"></p>
+        </div>
+        <div class="bg-rose-950/20 p-3 rounded-2xl border border-rose-900/40">
+          <p class="text-rose-400 font-bold uppercase tracking-wider">⚠️ Riesgos / Toxicidad</p>
+          <p class="text-rose-200/90 mt-1" id="catModalDanger"></p>
+        </div>
+        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+          <p class="text-cyan-400 font-bold uppercase tracking-wider">📍 Punto de Entrega en Bogotá</p>
+          <p class="text-slate-200 mt-1" id="catModalDisposal"></p>
+        </div>
+      </div>
+      <button onclick="toggleModal('categoryModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate
