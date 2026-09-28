@@ -71,6 +71,113 @@
       document.getElementById('catModalDisposal').textContent = d.disp;
       toggleModal('categoryModal', true);
     }
+
+    // --- BITÁCORA LOCAL (HISTORIAL) ---
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem('ecotech_history') || '[]'); } 
+      catch (e) { return []; }
+    }
+    function updateHistoryBadge() {
+      var h = getHistory();
+      var badge = document.getElementById('historyBadge');
+      if (badge) badge.textContent = h.length;
+    }
+    function renderHistoryList() {
+      var container = document.getElementById('historyItemsContainer');
+      var emptyMsg = document.getElementById('historyEmptyMsg');
+      if (!container) return;
+      var h = getHistory();
+      updateHistoryBadge();
+      if (h.length === 0) {
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        container.innerHTML = '';
+        return;
+      }
+      if (emptyMsg) emptyMsg.style.display = 'none';
+      container.innerHTML = h.map(function(item) {
+        var colorCls = item.statusColor === 'red' ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' :
+                       (item.statusColor === 'yellow' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40');
+        var thumbHtml = item.thumb ? '<img src="' + item.thumb + '" class="w-12 h-12 rounded-xl object-cover border border-slate-700 shrink-0" />' :
+                                     '<div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl shrink-0">♻️</div>';
+        return '<div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3.5 shadow-sm">' +
+                 thumbHtml +
+                 '<div class="flex-1 min-w-0">' +
+                   '<div class="flex items-center justify-between gap-2">' +
+                     '<h4 class="text-sm font-bold text-white truncate">' + item.name + '</h4>' +
+                     '<span class="text-[10px] px-2 py-0.5 rounded-full border font-semibold shrink-0 ' + colorCls + '">' + item.status + '</span>' +
+                   '</div>' +
+                   '<p class="text-[11px] text-slate-400 mt-0.5 truncate">' + item.category + '</p>' +
+                   '<p class="text-[10px] text-slate-500 mt-1">🕒 ' + item.date + '</p>' +
+                 '</div>' +
+               '</div>';
+      }).join('');
+    }
+    function toggleHistoryModal(show) {
+      var modal = document.getElementById('historyModal');
+      if (!modal) return;
+      if (show) renderHistoryList();
+      modal.style.display = show ? 'flex' : 'none';
+    }
+    function clearHistory() {
+      if (confirm('¿Deseas vaciar los registros de la bitácora?')) {
+        localStorage.removeItem('ecotech_history');
+        renderHistoryList();
+      }
+    }
+    function exportHistoryToCSV() {
+      var h = getHistory();
+      if (h.length === 0) {
+        alert('No hay registros en la bitácora para exportar.');
+        return;
+      }
+      var csv = 'Fecha,Residuo,Categoria,Estado,Materiales,Disposicion\\n';
+      h.forEach(function(r) {
+        csv += '"' + r.date + '","' + (r.name || '').replace(/"/g, '""') + '","' + (r.category || '').replace(/"/g, '""') + '","' + (r.status || '').replace(/"/g, '""') + '","' + (r.materials || '').replace(/"/g, '""') + '","' + (r.disposal || '').replace(/"/g, '""') + '"\\n';
+      });
+      var blob = new Blob(['\\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Bitacora_RAEE_ECCI.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    (function() {
+      var origFetch = window.fetch;
+      window.fetch = async function() {
+        var res = await origFetch.apply(this, arguments);
+        try {
+          var url = typeof arguments[0] === 'string' ? arguments[0] : (arguments[0] && arguments[0].url);
+          if (url && url.indexOf('/api/classify') !== -1) {
+            var clone = res.clone();
+            clone.json().then(function(d) {
+              if (d && d.is_tech_waste) {
+                var img = document.getElementById('previewImage');
+                var thumbSrc = (img && img.src && img.src.length < 60000) ? img.src : '';
+                var h = getHistory();
+                h.unshift({
+                  id: Date.now(),
+                  date: new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }),
+                  name: d.item_name || 'Componente RAEE',
+                  category: d.category || 'General',
+                  status: d.recyclability_status || 'Reciclable',
+                  statusColor: d.status_color || 'green',
+                  materials: (d.materials_recoverable || []).join(', '),
+                  disposal: d.disposal_guide || 'Punto limpio autorizado.',
+                  thumb: thumbSrc
+                });
+                if (h.length > 25) h.pop();
+                localStorage.setItem('ecotech_history', JSON.stringify(h));
+                updateHistoryBadge();
+              }
+            }).catch(function() {});
+          }
+        } catch(e) {}
+        return res;
+      };
+      window.addEventListener('DOMContentLoaded', updateHistoryBadge);
+    })();
   </script>
 </head>
 <body class="bg-[#0a0f16] text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 antialiased selection:bg-emerald-500 selection:text-white relative">
@@ -99,22 +206,24 @@
 
   <!-- BOTONES FLOTANTES -->
   <div class="fixed bottom-6 right-5 z-40 flex flex-col gap-2.5 items-end">
+    <button onclick="toggleHistoryModal(true)" class="py-2.5 px-4 rounded-full bg-[#111b27]/95 hover:bg-[#182535] border border-amber-500/60 text-amber-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_18px_rgba(245,158,11,0.3)] active:scale-95 transition backdrop-blur-md cursor-pointer">
+      <span>📋 Bitácora</span>
+      <span id="historyBadge" class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full text-[11px] font-mono border border-amber-500/40">0</span>
+    </button>
     <button onclick="toggleModal('creditsModal', true)" class="py-2.5 px-4 rounded-full bg-[#111b27]/95 hover:bg-[#182535] border border-cyan-500/60 text-cyan-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_18px_rgba(6,182,212,0.3)] active:scale-95 transition backdrop-blur-md cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-      <span>Ficha Académica</span>
+      <span>🎓 Ficha Académica</span>
     </button>
     <button onclick="toggleModal('objectiveModal', true)" class="py-2.5 px-4 rounded-full bg-[#101722]/95 hover:bg-[#162232] border border-emerald-500/60 text-emerald-400 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-95 transition backdrop-blur-md cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400 animate-pulse shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      <span>Objetivo</span>
+      <span>🎓 Objetivo</span>
     </button>
   </div>
 
   <!-- MODAL OBJETIVO -->
   <div id="objectiveModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
     <div class="bg-[#111b27] border border-emerald-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 glow-box relative">
-      <button onclick="toggleModal('objectiveModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">✕</button>
+      <button onclick="toggleModal('objectiveModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">✕</button>
       <div class="flex items-center gap-3">
-        <span class="text-2xl">🎯</span>
+        <span class="text-2xl">🎓</span>
         <div>
           <span class="text-[11px] font-bold text-emerald-400 tracking-wider uppercase">Proyecto Académico</span>
           <h3 class="text-lg font-bold text-white">Objetivo General</h3>
@@ -130,7 +239,7 @@
   <!-- MODAL FICHA ACADÉMICA -->
   <div id="creditsModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
     <div class="bg-[#111b27] border border-cyan-500/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-2xl space-y-4 relative max-h-[90vh] overflow-y-auto">
-      <button onclick="toggleModal('creditsModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">✕</button>
+      <button onclick="toggleModal('creditsModal', false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">✕</button>
       <div class="flex items-center gap-3">
         <span class="text-2xl">🎓</span>
         <div>
@@ -162,6 +271,35 @@
         </div>
       </div>
       <button onclick="toggleModal('creditsModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm">Cerrar</button>
+    </div>
+  </div>
+  <!-- MODAL BITÁCORA DE ESCANEOS -->
+  <div id="historyModal" class="fixed inset-0 z-50 bg-[#070a0f]/90 backdrop-blur-md flex items-center justify-center p-4" style="display: none;">
+    <div class="bg-[#111b27] border border-amber-500/40 rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4 relative max-h-[90vh] flex flex-col glow-box">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📋</span>
+          <div>
+            <h3 class="text-lg font-bold text-white leading-tight">Bitácora de Escaneos</h3>
+            <p class="text-[11px] text-slate-400">Historial de residuos analizados</p>
+          </div>
+        </div>
+        <button onclick="toggleHistoryModal(false)" class="text-slate-400 hover:text-white p-2 text-lg">✕</button>
+      </div>
+      <div id="historyItemsContainer" class="flex-1 overflow-y-auto space-y-2.5 pr-1 py-1"></div>
+      <div id="historyEmptyMsg" class="py-10 text-center space-y-2" style="display: none;">
+        <span class="text-3xl block">🔍</span>
+        <p class="text-sm font-semibold text-slate-300">Aún no hay registros en la bitácora</p>
+        <p class="text-xs text-slate-500 px-6">Toma o sube una foto de un residuo tecnológico para que aparezca aquí automáticamente.</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 flex gap-2">
+        <button onclick="exportHistoryToCSV()" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer">
+          📥 Exportar CSV
+        </button>
+        <button onclick="clearHistory()" class="py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold text-xs active:scale-95 transition cursor-pointer">
+          🗑️ Vaciar
+        </button>
+      </div>
     </div>
   </div>
 
@@ -196,9 +334,7 @@
       </div>
       <button onclick="toggleModal('categoryModal', false)" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm">Cerrar Guía</button>
     </div>
-  </div>
-
-  <!-- ENCABEZADO CON LOGOS -->
+  </div>  <!-- ENCABEZADO CON LOGOS -->
   <header class="w-full max-w-lg flex items-center justify-between py-4 sm:py-5 gap-3">
     <div class="flex items-center space-x-3 shrink-0">
       <img src="/logo-app.png" alt="EcoTech Logo" class="w-14 h-14 rounded-2xl object-contain border border-emerald-500/40 bg-slate-800/90 p-1 shadow-[0_0_18px_rgba(16,185,129,0.35)]" onerror="this.src='/icono.jpg'" />
