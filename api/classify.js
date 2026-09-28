@@ -78,7 +78,7 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
     };
 
     // Modelos oficiales recomendados por Google
-    const candidateModels = ['gemini-1.5-flash', 'gemini-2.5-flash'];
+    const candidateModels = ['gemini-1.5-flash', 'gemini-1.5-pro'];
     let lastError = null;
     let data = null;
 
