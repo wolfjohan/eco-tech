@@ -77,17 +77,41 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
       }
     };
 
-    // Modelos con alternancia automática si alguno presenta congestión (503)
-    const candidateModels = [
-      'gemini-3.8-flash',
-      'gemini-2.0-flash',
-      'gemini-3.8-flash-lite',
-      'gemini-3.6-flash'
-    ];
+    // 1. Obtener la lista dinámica de modelos disponibles para tu clave
+    let targetModels = [];
+    try {
+      const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+      if (listResp.ok) {
+        const listData = await listResp.json();
+        const available = (listData.models || [])
+          .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+          .map(m => m.name.replace(/^models\//, ''));
+        
+        // Priorizar modelos ligeros y rápidos que casi nunca se saturan (flash-lite y flash)
+        available.sort((a, b) => {
+          const score = (name) => {
+            if (name.includes('flash-lite')) return 3;
+            if (name.includes('flash')) return 2;
+            return 1;
+          };
+          return score(b) - score(a);
+        });
+        targetModels = available;
+      }
+    } catch (e) {
+      console.error('Error listando modelos:', e);
+    }
+
+    // Lista de respaldo en caso de que la consulta inicial tarde
+    if (targetModels.length === 0) {
+      targetModels = ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-2.0-flash'];
+    }
+
     let lastError = null;
     let data = null;
 
-    for (const model of candidateModels) {
+    // Probar secuencialmente hasta encontrar uno disponible que no esté saturado (503)
+    for (const model of targetModels) {
       const generateUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       try {
         const genResp = await fetch(generateUrl, {
@@ -98,11 +122,11 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
 
         if (genResp.ok) {
           data = await genResp.json();
-          break; // Conexión exitosa, salir del ciclo
+          break; // Conexión exitosa, salir del bucle
         } else {
           const genErr = await genResp.text();
           lastError = `Modelo ${model} (${genResp.status}): ${genErr}`;
-          // Si da 503 o 404, continúa inmediatamente con el siguiente modelo de la lista
+          // Si da 503 (alta demanda) o 404, prueba de inmediato el siguiente modelo
         }
       } catch (networkErr) {
         lastError = networkErr.message;
@@ -111,7 +135,7 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
 
     if (!data) {
       return res.status(502).json({
-        error: `Servidores de IA ocupados temporalmente. Por favor reintenta en un momento. Detalle: ${lastError}`
+        error: `Servidores de Google temporalmente congestionados. Por favor reintenta en unos segundos. (${lastError})`
       });
     }
 
