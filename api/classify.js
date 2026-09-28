@@ -77,8 +77,13 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
       }
     };
 
-    // Modelos vigentes recomendados por Google
-    const candidateModels = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash'];
+    // Modelos con alternancia automática si alguno presenta congestión (503)
+    const candidateModels = [
+      'gemini-3.8-flash',
+      'gemini-2.0-flash',
+      'gemini-3.8-flash-lite',
+      'gemini-3.6-flash'
+    ];
     let lastError = null;
     let data = null;
 
@@ -93,10 +98,11 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
 
         if (genResp.ok) {
           data = await genResp.json();
-          break; // Conexión exitosa
+          break; // Conexión exitosa, salir del ciclo
         } else {
           const genErr = await genResp.text();
           lastError = `Modelo ${model} (${genResp.status}): ${genErr}`;
+          // Si da 503 o 404, continúa inmediatamente con el siguiente modelo de la lista
         }
       } catch (networkErr) {
         lastError = networkErr.message;
@@ -105,7 +111,7 @@ Si el objeto en la imagen NO es un desecho tecnológico o electrónico, devuelve
 
     if (!data) {
       return res.status(502).json({
-        error: `Error al procesar con IA: ${lastError}`
+        error: `Servidores de IA ocupados temporalmente. Por favor reintenta en un momento. Detalle: ${lastError}`
       });
     }
 
