@@ -264,9 +264,9 @@
         var name = (nameEl ? nameEl.textContent : '').toLowerCase();
         
         if (cat.indexOf('batería') !== -1 || name.indexOf('batería') !== -1 || name.indexOf('pila') !== -1 || cat.indexOf('acumulador') !== -1) {
-          query = 'Contenedor Pilas con el ambiente Bogota';
+          query = 'Pilas con el ambiente Bogota';
         } else if (cat.indexOf('informática') !== -1 || cat.indexOf('periférico') !== -1 || cat.indexOf('pequeña') !== -1 || name.indexOf('celular') !== -1 || name.indexOf('cable') !== -1 || name.indexOf('computador') !== -1 || name.indexOf('mouse') !== -1 || name.indexOf('teclado') !== -1 || name.indexOf('tarjeta') !== -1) {
-          query = 'Punto EcoComputo Bogota';
+          query = 'EcoComputo Bogota';
         } else if (name.indexOf('bombillo') !== -1 || name.indexOf('lámpara') !== -1 || name.indexOf('tubo') !== -1) {
           query = 'Lumina recoleccion iluminacion Bogota';
         } else if (cat.indexOf('pantalla') !== -1 || cat.indexOf('monitor') !== -1 || name.indexOf('televisor') !== -1) {
@@ -276,20 +276,9 @@
         }
       }
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-          var lat = pos.coords.latitude;
-          var lon = pos.coords.longitude;
-          var url = 'https://www.google.com/maps/search/' + encodeURIComponent(query) + '/@' + lat + ',' + lon + ',14z';
-          window.open(url, '_blank');
-        }, function() {
-          var url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
-          window.open(url, '_blank');
-        }, { timeout: 3500 });
-      } else {
-        var url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
-        window.open(url, '_blank');
-      }
+      var mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+      // En móviles, window.location.href abre directamente la app nativa de Google Maps sin bloqueo de popups
+      window.location.href = mapsUrl;
     }
   </script>
 </head>
